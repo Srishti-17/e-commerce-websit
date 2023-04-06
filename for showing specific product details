@@ -1,0 +1,56 @@
+
+import { useEffect, useState } from 'react';
+import ReviewList from './ReviewList';
+
+function ProductDetails() {
+  const [product, setProduct] = useState({});
+  const [comment, setComment] = useState('');
+  const [replies,setReplies]=useState('')
+ 
+  const [reviews, setReviews] = useState([]);
+  console.log(reviews);
+  useEffect(() => {
+    const data = JSON.parse(localStorage.getItem('product'));
+    setProduct(data);
+  }, []);
+  const handleCommentChange = (event) => {
+    setComment(event.target.value);
+  };
+  const handleSubmitComment = (event) => {
+    event.preventDefault();
+    const newReview = {
+      comment: comment,
+      replies: []
+    };
+    setReviews([...reviews, newReview]);
+    setComment('');
+  };
+ 
+  return (
+    <>
+      <div className="Descriptioncontainer">
+        <div className='box'>
+          <h1 className="title">{product?.title || ''}</h1>
+          <div className='image'>
+            <img src={product.image} width="100px" alt={`Preview of ${product.title}`}  />
+          </div>
+          <p className="des">{product.description}</p>
+          <p className='des'>Price: ${product.price}</p>
+        </div>
+      </div>
+      <div className="review-container">
+        <h2 className='review'>Reviews:</h2>
+       
+      </div>
+      <div className="comment-container">
+        <form  className="form" onSubmit={handleSubmitComment}>
+          <label className="comm">Add a comment:</label>
+          <textarea id="comment" name="comment"  value={comment} onChange={handleCommentChange}></textarea>
+          <button type="submit" className='Button'>Submit Comment</button>
+        </form>
+        <ReviewList  reviews={reviews}  className='rev'/>
+      </div>
+    </>
+  );
+}
+export default ProductDetails;
