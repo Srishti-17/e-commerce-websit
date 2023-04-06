@@ -1,0 +1,56 @@
+import Data from './Data.json'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import ReviewList from '../ReviewList';
+
+function Category() {
+  const [category, setCategory] = useState('All');
+  const navigate = useNavigate();
+
+  const handleSelectChange = (event) => {
+    setCategory(event.target.value);
+  };
+
+  const filteredData = category === 'All' ? Data : Data.filter((item) => {
+    return item.category === category; 
+  });
+
+  const handleProduct = (product) => {
+    console.log(product);
+    localStorage.setItem('product', JSON.stringify(product));
+    navigate('/Description');
+  };
+  
+  const renderData = () => {
+    return filteredData.map((item) => (
+      <div className="stylescard" onClick={() => handleProduct(item)}>
+        <img src={item.image}  alt={`Preview of ${item.title}`} />
+        <h3>{item.title}</h3>
+        <p>${item.price}</p>
+        <p>{item.category}</p>
+        <p>
+          <button>Add to Cart</button>
+        </p>
+      </div>
+    ));
+  };
+  return (
+    <>
+      <div className="container">
+        <h1>Let's Shop</h1>
+        <select className="products" value={category} onChange={handleSelectChange}>
+          <option value="All">All</option>
+          <option value="men's clothing">Men</option>
+          <option value="women's clothing">Women</option>
+          <option value="jewelery">Jewelery</option>
+          <option value="electronics">electronics</option>
+        </select>
+        <div className="card-container">
+          {renderData()}
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default Category;
